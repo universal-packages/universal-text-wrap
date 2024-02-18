@@ -12,14 +12,14 @@ npm install @universal-packages/text-wrap
 
 ## Global methods
 
-#### **`wrap(text: string, width: number, [options: Object])`**
+#### **`wrap(text: string, [options: Object])`**
 
 Wraps a string to a given width.
 
 ```js
 import { wrapText } from '@universal-packages/text-wrap'
 
-const wrappedText = wrapText('This is some super long text', 10)
+const wrappedText = wrapText('This is some super long text', { width: 10 })
 
 console.log(wrappedText)
 // > This is
@@ -33,7 +33,7 @@ console.log(wrappedText)
   Aligns the text within the width.
 
   ```js
-  const wrappedTextCenter = wrapText('This is some super long text', 9, { align: 'center' })
+  const wrappedTextCenter = wrapText('This is some super long text', { align: 'center', width: 9 })
 
   console.log(wrappedTextCenter)
   // >  This is
@@ -41,14 +41,14 @@ console.log(wrappedText)
   // >   super
   // > long text
 
-  const wrappedTextRight = wrapText('This is some super long text', 10, { align: 'right' })
+  const wrappedTextRight = wrapText('This is some super long text', { align: 'right', width: 10 })
 
   console.log(wrappedTextRight)
   // >    This is
   // > some super
   // >  long text
 
-  const wrappedTextJustify = wrapText('This is some super long text', 10, { align: 'justify' })
+  const wrappedTextJustify = wrapText('This is some super long text', { align: 'justify', width: 10 })
 
   console.log(wrappedTextJustify)
   // > This    is
@@ -60,7 +60,7 @@ console.log(wrappedText)
   Fills the block with spaces to the width.
 
   ```js
-  const wrappedTextFillBlock = wrapText('This is some super long text', 10, { fillBlock: true })
+  const wrappedTextFillBlock = wrapText('This is some super long text', { fillBlock: true, width: 10 })
 
   console.log(wrappedTextFillBlock)
   // > This is°°°
@@ -72,14 +72,14 @@ console.log(wrappedText)
   Breaks words to fit the width, and adds a hyphen to the end of the line. Use `always` to always hyphenate to fit the width on each line that needs it. Use `word` to only hyphenate words that are too long to fit the width. Use `never` or do not pass the option to disable hyphenation. The hyphenation follows just a few simple rules, like we don't break words smaller than 4 characters, and we only hyphenate text aligned to the left.
 
   ```js
-  const wrappedTextHyphenate = wrapText('This is some super long text', 10, { hyphenate: 'always' })
+  const wrappedTextHyphenate = wrapText('This is some super long text', { hyphenate: 'always', width: 10 })
 
   console.log(wrappedTextHyphenate)
   // > This is s-
   // > ome super
   // > long text
 
-  const wrappedTextHyphenateWord = wrapText('This is some large text and a very ultramegalarge word', 10, { hyphenate: 'word' })
+  const wrappedTextHyphenateWord = wrapText('This is some large text and a very ultramegalarge word', { hyphenate: 'word', width: 10 })
 
   console.log(wrappedTextHyphenateWord)
 
@@ -95,7 +95,7 @@ console.log(wrappedText)
   Adds padding to the wrapped lines. You can pass a single number to add the same padding to all sides, or an array with 4 numbers to add padding to each side in the following order: top, right, bottom, left.
 
   ```js
-  const wrappedTextPadding = wrapText('This is some super long text', 10, { padding: 2 })
+  const wrappedTextPadding = wrapText('This is some super long text', { padding: 2, width: 10 })
 
   console.log(wrappedTextOnFinishLine)
   // > °°°°°°°°°°°°°°
@@ -105,6 +105,18 @@ console.log(wrappedText)
   // > °°long text°°°
   // > °°°°°°°°°°°°°°
   // > °°°°°°°°°°°°°°
+  ```
+
+- **`width`** `number` `default: 80`
+  The width of the block to wrap the text. If not provided align, fillBlock, and padding will be applied as if width was provided as the largest line in the input text.
+
+  ```js
+  const wrappedTextWidth = wrapText('This is some super long text', { padding: 1 })
+
+  console.log(wrappedTextWidth)
+  // > °°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+  // > °This is some super long text°
+  // > °°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
   ```
 
 ## Typescript

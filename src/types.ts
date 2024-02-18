@@ -8,6 +8,7 @@ export interface WrapTextOptions {
   fillBlock?: boolean
   hyphenate?: HyphenateRule
   padding?: Padding
+  width?: number
 }
 
 export interface WrappedLine {

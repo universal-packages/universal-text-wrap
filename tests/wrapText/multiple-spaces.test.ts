@@ -4,12 +4,12 @@ describe(wrapText, (): void => {
   it('respects multiple spaces between words', async (): Promise<void> => {
     const largeText = '  Hello    World!'
 
-    const wrappedText = wrapText(largeText, 10)
+    const wrappedText = wrapText(largeText, { width: 10 })
 
     expect(wrappedText).toEqual(`  Hello   
 World!`)
 
-    const wrappedText2 = wrapText(largeText, -10)
+    const wrappedText2 = wrapText(largeText, { width: -10 })
 
     expect(wrappedText2).toEqual(`
 

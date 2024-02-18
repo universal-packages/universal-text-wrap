@@ -5,34 +5,47 @@ import { HyphenateRule, Padding, SelectivePadding, WrapTextOptions, WrappedLine 
 const WORTHY_WORD_SIZE_FOR_WORD_BREAK = 3
 const WORTHY_REMAINING_SPACE_FOR_WORD_BREAK = ' -'.length
 
-export function wrap(text: string, width: number, options?: WrapTextOptions): WrappedLine[] {
-  const finalText = stripAnsi(text)
-  const finalWidth = Math.max(1, width)
-  const finalOptions: WrapTextOptions = { ...options }
-  const padding = normalizePadding(finalOptions.padding || 0)
+export function wrap(text: string, options?: WrapTextOptions): WrappedLine[] {
+  const strippedText = stripAnsi(text)
+  const textLines = strippedText.split('\n')
+  const longestLineSize = getLongestLineLength(textLines)
+  const finalOptions: WrapTextOptions = {
+    align: 'left',
+    hyphenate: 'never',
+    fillBlock: false,
+    ...options,
+    padding: normalizePadding(options?.padding || 0),
+    width: Math.max(options?.width || longestLineSize, 1)
+  }
+
+  return textLines.reduce((acc: WrappedLine[], line: string) => acc.concat(wrapOriginalLine(line, finalOptions)), [])
+}
+
+function wrapOriginalLine(text: string, options: WrapTextOptions): WrappedLine[] {
+  const { align, fillBlock, hyphenate, padding, width } = options
   const lines: string[] = []
-  const words = finalText.split(' ')
+  const words = text.split(' ')
 
   for (let i = 0; i < words.length; i++) {
     const currentWord = words[i]
 
     if (lines.length === 0) {
-      if (currentWord.length > finalWidth) {
-        applyWordBreak(currentWord, lines, finalWidth, finalOptions.hyphenate)
+      if (currentWord.length > width) {
+        applyWordBreak(currentWord, lines, width, hyphenate)
       } else {
         lines.push(currentWord)
       }
     } else {
-      if (lines[lines.length - 1].length + currentWord.length + 1 > finalWidth) {
+      if (lines[lines.length - 1].length + currentWord.length + 1 > width) {
         if (!currentWord) {
           lines.push('')
-        } else if (finalOptions.align && finalOptions.align !== 'left') {
+        } else if (align && align !== 'left') {
           lines.push(currentWord)
         } else {
-          applyWordBreak(currentWord, lines, finalWidth, finalOptions.hyphenate)
+          applyWordBreak(currentWord, lines, width, hyphenate)
         }
       } else {
-        if (!currentWord && lines[lines.length - 1].length === 0 && finalWidth === 1) {
+        if (!currentWord && lines[lines.length - 1].length === 0 && width === 1) {
           lines.push('')
           continue
         }
@@ -45,20 +58,20 @@ export function wrap(text: string, width: number, options?: WrapTextOptions): Wr
   const wrappedLines: WrappedLine[] = []
 
   for (let i = 0; i < padding[0]; i++) {
-    wrappedLines.push({ leftFill: ' '.repeat(padding[3]), rightFill: ' '.repeat(padding[1]), text: ' '.repeat(finalWidth) })
+    wrappedLines.push({ leftFill: ' '.repeat(padding[3]), rightFill: ' '.repeat(padding[1]), text: ' '.repeat(width) })
   }
 
   for (let i = 0; i < lines.length; i++) {
-    switch (finalOptions.align) {
+    switch (align) {
       case 'justify':
         wrappedLines.push({
           leftFill: ' '.repeat(padding[3]),
           rightFill: ' '.repeat(padding[1]),
-          text: justifyText(lines[i], finalWidth)
+          text: justifyText(lines[i], width)
         })
         break
       case 'right':
-        const alignRightPadding = finalWidth - lines[i].length
+        const alignRightPadding = width - lines[i].length
 
         wrappedLines.push({
           leftFill: ' '.repeat(padding[3] + alignRightPadding),
@@ -67,8 +80,8 @@ export function wrap(text: string, width: number, options?: WrapTextOptions): Wr
         })
         break
       case 'center':
-        const centerLeftPadding = Math.floor((finalWidth - lines[i].length) / 2)
-        const centerRightPadding = padding[1] || finalOptions.fillBlock ? finalWidth - lines[i].length - centerLeftPadding : 0
+        const centerLeftPadding = Math.floor((width - lines[i].length) / 2)
+        const centerRightPadding = padding[1] || fillBlock ? width - lines[i].length - centerLeftPadding : 0
 
         wrappedLines.push({
           leftFill: ' '.repeat(padding[3] + centerLeftPadding),
@@ -77,7 +90,7 @@ export function wrap(text: string, width: number, options?: WrapTextOptions): Wr
         })
         break
       default:
-        const fillBlockPadding = padding[1] || finalOptions.fillBlock ? finalWidth - lines[i].length : 0
+        const fillBlockPadding = padding[1] || fillBlock ? width - lines[i].length : 0
 
         wrappedLines.push({
           leftFill: ' '.repeat(padding[3]),
@@ -89,7 +102,7 @@ export function wrap(text: string, width: number, options?: WrapTextOptions): Wr
   }
 
   for (let i = 0; i < padding[2]; i++) {
-    wrappedLines.push({ leftFill: ' '.repeat(padding[3]), rightFill: ' '.repeat(padding[1]), text: ' '.repeat(finalWidth) })
+    wrappedLines.push({ leftFill: ' '.repeat(padding[3]), rightFill: ' '.repeat(padding[1]), text: ' '.repeat(width) })
   }
 
   return wrappedLines
@@ -171,4 +184,8 @@ function splitWord(word: string, maxWidth: number): string[] {
     parts.push(part)
   }
   return parts
+}
+
+function getLongestLineLength(lines: string[]): number {
+  return lines.reduce((acc: number, line: string) => Math.max(acc, line.length), 0)
 }
