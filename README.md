@@ -1,7 +1,7 @@
 # Text Wrap
 
-[![npm version](https://badge.fury.io/js/@universal-packages%2Fworkflows.svg)](https://www.npmjs.com/package/@universal-packages/text-wrap)
-[![Testing](https://github.com/universal-packages/universal-text-wrap/actions/text-wrap/testing.yml/badge.svg)](https://github.com/universal-packages/universal-text-wrap/actions/text-wrap/testing.yml)
+[![npm version](https://badge.fury.io/js/@universal-packages%2Ftext-wrap.svg)](https://www.npmjs.com/package/@universal-packages/text-wrap)
+[![Testing](https://github.com/universal-packages/universal-text-wrap/actions/workflows/testing.yml/badge.svg)](https://github.com/universal-packages/universal-text-wrap/actions/workflows/testing.yml)
 [![codecov](https://codecov.io/gh/universal-packages/universal-text-wrap/branch/main/graph/badge.svg?token=CXPJSN8IGL)](https://codecov.io/gh/universal-packages/universal-text-wrap)
 
 ## Install
