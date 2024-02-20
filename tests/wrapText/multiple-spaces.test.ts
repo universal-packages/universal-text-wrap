@@ -2,16 +2,18 @@ import { wrapText } from '../../src'
 
 describe(wrapText, (): void => {
   it('respects multiple spaces between words', async (): Promise<void> => {
-    const largeText = '  Hello    World!'
-
-    const wrappedText = wrapText(largeText, { width: 10 })
-
-    expect(wrappedText).toEqual(`  Hello   
+    expect(
+      wrapText('  Hello    World!', {
+        width: 10
+      })
+    ).toEqual(`  Hello   
 World!`)
 
-    const wrappedText2 = wrapText(largeText, { width: -10 })
-
-    expect(wrappedText2).toEqual(`
+    expect(
+      wrapText('  Hello    World!', {
+        width: -10
+      })
+    ).toEqual(`
 
 H
 e
@@ -30,22 +32,30 @@ d
   })
 
   it('works with truncated heights', async (): Promise<void> => {
-    const largeText = '  Hello    World!'
+    expect(
+      wrapText('  Hello    World!', {
+        width: 10,
+        height: 1
+      })
+    ).toEqual(`  Hello...`)
 
-    const wrappedText = wrapText(largeText, { width: 10, height: 1 })
-
-    expect(wrappedText).toEqual(`  Hello...`)
-
-    const wrappedText2 = wrapText(largeText, { width: -10, height: 4 })
-
-    expect(wrappedText2).toEqual(`
+    expect(
+      wrapText('  Hello    World!', {
+        width: -10,
+        height: 4
+      })
+    ).toEqual(`
 
 H
 e`)
 
-    const wrappedText3 = wrapText(largeText, { fillBlock: true, width: 1, height: 9 })
-
-    expect(wrappedText3).toEqual(` 
+    expect(
+      wrapText('  Hello    World!', {
+        fillBlock: true,
+        width: 1,
+        height: 9
+      })
+    ).toEqual(` 
  
 H
 e
@@ -55,13 +65,21 @@ o
  
  `)
 
-    const wrappedText4 = wrapText(largeText, { fillBlock: true, width: 1, height: 1 })
+    expect(
+      wrapText('  Hello    World!', {
+        fillBlock: true,
+        width: 1,
+        height: 1
+      })
+    ).toEqual(` `)
 
-    expect(wrappedText4).toEqual(` `)
-
-    const wrappedText5 = wrapText(largeText, { fillBlock: true, width: 2, height: 4 })
-
-    expect(wrappedText5).toEqual(`  
+    expect(
+      wrapText('  Hello    World!', {
+        fillBlock: true,
+        width: 2,
+        height: 4
+      })
+    ).toEqual(`  
 He
 ll
 o `)
