@@ -1,12 +1,31 @@
-import { Padding, SelectivePadding } from './types'
+import { NumericSides, VerticalPaddingLine, WrappedLine, WrappedLineDescriptor } from './types'
 
-export function normalizePadding(padding: Padding): SelectivePadding {
-  if (typeof padding === 'number') {
-    const normalizedPadding = Math.max(padding, 0)
+export function synthesizeWrappedLine(wrappedLine: WrappedLine): string {
+  const wrappedLineDescriptor = wrappedLine as WrappedLineDescriptor
+  const verticalPaddingLine = wrappedLine as VerticalPaddingLine
+
+  if (verticalPaddingLine.padding) {
+    return ' '.repeat(verticalPaddingLine.padding)
+  } else {
+    return (
+      ' '.repeat(wrappedLineDescriptor.leftMargin) +
+      ' '.repeat(wrappedLineDescriptor.leftPadding) +
+      ' '.repeat(wrappedLineDescriptor.leftFill) +
+      wrappedLineDescriptor.text +
+      ' '.repeat(wrappedLineDescriptor.rightFill) +
+      ' '.repeat(wrappedLineDescriptor.rightPadding) +
+      ' '.repeat(wrappedLineDescriptor.rightMargin)
+    )
+  }
+}
+
+export function normalizeNumericSides(sides: number | NumericSides): NumericSides {
+  if (typeof sides === 'number') {
+    const normalizedPadding = Math.max(sides, 0)
 
     return [normalizedPadding, normalizedPadding, normalizedPadding, normalizedPadding]
   } else {
-    return [Math.max(padding[0] || 0, 0), Math.max(padding[1] || 0, 0), Math.max(padding[2] || 0, 0), Math.max(padding[3] || 0, 0)]
+    return [Math.max(sides[0] || 0, 0), Math.max(sides[1] || 0, 0), Math.max(sides[2] || 0, 0), Math.max(sides[3] || 0, 0)]
   }
 }
 

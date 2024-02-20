@@ -69,7 +69,7 @@ console.log(wrappedText)
   ```
 
 - **`height`** `number`
-  Truncates the text so that it fits the height. If not provided, the text will be wrapped only to the width.
+  Truncates the text so that it fits the height. If not provided, the text will be wrapped only to the width. if the `hight` is greater to the number of lines, the text will be filled with spaces if `fillBlock` is `true`.
 
   ```js
   const wrappedTextFillBlock = wrapText('This is some super long text', { width: 10, height: 2 })
@@ -77,6 +77,16 @@ console.log(wrappedText)
   console.log(wrappedTextFillBlock)
   // > This is
   // > some su...
+
+  const wrappedTextFillBlock = wrapText('This is some super long text', { fillBlock: true, width: 10, height: 5 })
+
+  console.log(wrappedTextFillBlock)
+
+  // > This is°°°
+  // > some super
+  // > long text°
+  // > °°°°°°°°°°
+  // > °°°°°°°°°°
   ```
 
 - **`hyphenate`** `'always' | 'word' | 'never'` `default: 'never'`
@@ -102,8 +112,10 @@ console.log(wrappedText)
   // > e word
   ```
 
-- **`padding`** `number | [number. number, number. number]` `default: 0`
-  Adds padding to the wrapped lines. You can pass a single number to add the same padding to all sides, or an array with 4 numbers to add padding to each side in the following order: top, right, bottom, left.
+- **`margin`** `number | [number. number, number. number]` `default: 0`
+  Adds margin to the wrapped lines. You can pass a single number to add the same padding to all sides, or an array with 4 numbers to add padding to each side in the following order: top, right, bottom, left.
+
+  > The margin adds to the final width of the block, for example, if you have a width of 10 and a margin of 2, the text will be wrapped to 10 characters but each line will have a length of 14 characters.
 
   ```js
   const wrappedTextPadding = wrapText('This is some super long text', { padding: 2, width: 10 })
@@ -116,6 +128,41 @@ console.log(wrappedText)
   // > °°long text°°°
   // > °°°°°°°°°°°°°°
   // > °°°°°°°°°°°°°°
+  ```
+
+- **`padding`** `number | [number. number, number. number]` `default: 0`
+  Adds padding to the wrapped lines. You can pass a single number to add the same padding to all sides, or an array with 4 numbers to add padding to each side in the following order: top, right, bottom, left.
+
+  > The wrapped text will be wrapped considering the horizontal padding, for example, if you have a width of 10 and a padding of 2, the text will be wrapped to 6 characters.
+
+  ```js
+  const wrappedTextPadding = wrapText('This is some super long text', { padding: 2, width: 10 })
+
+  console.log(wrappedTextOnFinishLine)
+  // > °°°°°°°°°°°°°°
+  // > °°°°°°°°°°°°°°
+  // > °°This is°°°°°
+  // > °°some super°°
+  // > °°long text°°°
+  // > °°°°°°°°°°°°°°
+  // > °°°°°°°°°°°°°°
+  ```
+
+- **`verticalAlign`** `'top' | 'middle' | 'bottom'` `default: 'top'`
+  When the height is provided, aligns the text vertically within the height only if `fillBlock` is `true`.
+
+  ```js
+  const wrappedMiddleText = wrapText('This is some super long text', { fillBlock: true, width: 10, height: 7, verticalAlign: 'middle' })
+
+  console.log(wrappedMiddleText)
+
+  // > °°°°°°°°°°
+  // > °°°°°°°°°°
+  // > This is°°°
+  // > some super
+  // > long text°
+  // > °°°°°°°°°°
+  // > °°°°°°°°°°
   ```
 
 - **`width`** `number`

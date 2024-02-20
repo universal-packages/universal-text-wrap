@@ -1,7 +1,7 @@
 import stripAnsi from 'strip-ansi'
 
 import { HyphenateRule, WrapTextOptions, WrappedLine } from './types'
-import { getLongestLineLength, justifyText, normalizePadding, splitWord } from './utils'
+import { getLongestLineLength, justifyText, normalizeNumericSides, splitWord } from './utils'
 
 const WORTHY_WORD_SIZE_FOR_WORD_BREAK = 3
 const WORTHY_REMAINING_SPACE_FOR_WORD_BREAK = ' -'.length
@@ -9,21 +9,27 @@ const WORTHY_WIDTH_SIZE_FOR_ELLIPSES = 7
 const ELLIPSES = '...'
 
 export function wrap(text: string, options?: WrapTextOptions): WrappedLine[] {
-  const height = options?.height === undefined ? undefined : Math.max(options?.height, 1)
+  const padding = normalizeNumericSides(options?.padding || 0)
+  const height = options?.height === undefined ? undefined : Math.max(options.height - padding[0] - padding[2], 1)
   const strippedText = stripAnsi(text)
   const textLines = strippedText.split('\n')
 
+  // Optimization for when input comes in multiple lines and we need the longest one to calculate the width
   if (height && !options?.width && textLines.length > height) textLines.splice(height)
 
   const longestLineSize = getLongestLineLength(textLines)
+  const desiredWidth = Math.max(options?.width || longestLineSize + padding[1] + padding[3], 1)
+  const finalWidth = Math.max(desiredWidth - padding[1] - padding[3], 1)
   const finalOptions: WrapTextOptions = {
     align: 'left',
     hyphenate: 'never',
     fillBlock: false,
+    verticalAlign: 'top',
     ...options,
     height,
-    padding: normalizePadding(options?.padding || 0),
-    width: Math.max(options?.width || longestLineSize, 1)
+    margin: normalizeNumericSides(options?.margin || 0),
+    padding,
+    width: finalWidth
   }
 
   const wrappedTextLines: string[] = []
@@ -39,16 +45,40 @@ export function wrap(text: string, options?: WrapTextOptions): WrappedLine[] {
 
   const wrappedLines: WrappedLine[] = []
 
-  for (let i = 0; i < finalOptions.padding[0]; i++) {
-    wrappedLines.push({ padding: ' '.repeat(finalOptions.width + finalOptions.padding[3] + finalOptions.padding[1]) })
+  for (let i = 0; i < finalOptions.padding[0] + finalOptions.margin[0]; i++) {
+    wrappedLines.push({ padding: finalWidth + finalOptions.padding[3] + finalOptions.padding[1] + finalOptions.margin[3] + finalOptions.margin[1] })
+  }
+
+  if (height && wrappedLines.length + finalOptions.padding[0] + finalOptions.padding[2] < finalOptions.height && finalOptions.fillBlock) {
+    const remainingLines = height - wrappedTextLines.length - finalOptions.padding[0] - finalOptions.padding[2]
+
+    if (finalOptions.verticalAlign === 'middle') {
+      const halfRemainingLines = Math.floor(remainingLines / 2)
+
+      for (let i = 0; i < halfRemainingLines; i++) wrappedLines.push(generateWrappedLine('', finalOptions))
+    } else if (finalOptions.verticalAlign === 'bottom') {
+      for (let i = 0; i < remainingLines; i++) wrappedLines.push(generateWrappedLine('', finalOptions))
+    }
   }
 
   for (let i = 0; i < wrappedTextLines.length; i++) {
     wrappedLines.push(generateWrappedLine(wrappedTextLines[i], finalOptions))
   }
 
-  for (let i = 0; i < finalOptions.padding[2]; i++) {
-    wrappedLines.push({ padding: ' '.repeat(finalOptions.width + finalOptions.padding[3] + finalOptions.padding[1]) })
+  if (height && wrappedLines.length + finalOptions.padding[0] + finalOptions.padding[2] < finalOptions.height && finalOptions.fillBlock) {
+    const remainingLines = height - wrappedTextLines.length - finalOptions.padding[0] - finalOptions.padding[2]
+
+    if (finalOptions.verticalAlign === 'middle') {
+      const halfRemainingLines = Math.ceil(remainingLines / 2)
+
+      for (let i = 0; i < halfRemainingLines; i++) wrappedLines.push(generateWrappedLine('', finalOptions))
+    } else if (finalOptions.verticalAlign === 'top') {
+      for (let i = 0; i < remainingLines; i++) wrappedLines.push(generateWrappedLine('', finalOptions))
+    }
+  }
+
+  for (let i = 0; i < finalOptions.padding[2] + finalOptions.margin[2]; i++) {
+    wrappedLines.push({ padding: finalOptions.width + finalOptions.padding[3] + finalOptions.padding[1] + finalOptions.margin[3] + finalOptions.margin[1] })
   }
 
   return wrappedLines
@@ -87,52 +117,56 @@ function wrapLine(lines: string[], text: string, options: WrapTextOptions): void
 }
 
 function generateWrappedLine(text: string, options: WrapTextOptions): WrappedLine {
-  const { align, fillBlock, padding, width } = options
+  const { align, fillBlock, margin, padding, width } = options
 
   switch (align) {
     case 'justify':
       return {
-        alignment: align,
-        leftFill: '',
-        leftPadding: ' '.repeat(padding[3]),
-        rightFill: '',
-        rightPadding: ' '.repeat(padding[1]),
+        leftFill: 0,
+        leftMargin: margin[3],
+        leftPadding: padding[3],
+        rightFill: 0,
+        rightMargin: margin[1],
+        rightPadding: padding[1],
         text: justifyText(text, width)
       }
     case 'right':
       const alignRightPadding = width - text.length
 
       return {
-        alignment: align,
-        leftFill: ' '.repeat(alignRightPadding),
-        leftPadding: ' '.repeat(padding[3]),
-        rightFill: '',
-        rightPadding: ' '.repeat(padding[1]),
+        leftFill: alignRightPadding,
+        leftMargin: margin[3],
+        leftPadding: padding[3],
+        rightFill: 0,
+        rightMargin: margin[1],
+        rightPadding: padding[1],
         text: text
       }
 
     case 'center':
       const centerLeftPadding = Math.floor((width - text.length) / 2)
-      const centerRightPadding = padding[1] || fillBlock ? width - text.length - centerLeftPadding : 0
+      const centerRightPadding = padding[1] || margin[1] || fillBlock ? width - text.length - centerLeftPadding : 0
 
       return {
-        alignment: align,
-        leftFill: ' '.repeat(centerLeftPadding),
-        leftPadding: ' '.repeat(padding[3]),
-        rightFill: ' '.repeat(centerRightPadding),
-        rightPadding: ' '.repeat(padding[1]),
+        leftFill: centerLeftPadding,
+        leftMargin: margin[3],
+        leftPadding: padding[3],
+        rightFill: centerRightPadding,
+        rightMargin: margin[1],
+        rightPadding: padding[1],
         text: text
       }
 
     default:
-      const fillBlockPadding = padding[1] || fillBlock ? width - text.length : 0
+      const fillBlockPadding = padding[1] || margin[1] || fillBlock ? width - text.length : 0
 
       return {
-        alignment: align,
-        leftFill: '',
-        leftPadding: ' '.repeat(padding[3]),
-        rightFill: ' '.repeat(fillBlockPadding),
-        rightPadding: ' '.repeat(padding[1]),
+        leftFill: 0,
+        leftMargin: margin[3],
+        leftPadding: padding[3],
+        rightFill: fillBlockPadding,
+        rightMargin: margin[1],
+        rightPadding: padding[1],
         text: text
       }
   }

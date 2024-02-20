@@ -1,26 +1,32 @@
 export type HyphenateRule = 'always' | 'word' | 'never'
-export type WrapAlignment = 'left' | 'center' | 'right' | 'justify'
-export type Padding = number | SelectivePadding
-export type SelectivePadding = [number, number, number, number]
+export type Margin = number | NumericSides
+export type Padding = number | NumericSides
+export type NumericSides = [number, number, number, number]
+export type TextAlign = 'left' | 'center' | 'right' | 'justify'
+export type VerticalAlign = 'top' | 'middle' | 'bottom'
 export type WrappedLine = WrappedLineDescriptor | VerticalPaddingLine
+
 export interface WrapTextOptions {
-  align?: WrapAlignment
+  align?: TextAlign
   fillBlock?: boolean
   height?: number
   hyphenate?: HyphenateRule
+  margin?: Margin
   padding?: Padding
+  verticalAlign?: VerticalAlign
   width?: number
 }
 
 export interface WrappedLineDescriptor {
-  alignment: WrapAlignment
-  leftFill: string
-  leftPadding: string
-  rightFill: string
-  rightPadding: string
+  leftFill: number
+  leftMargin: number
+  leftPadding: number
+  rightFill: number
+  rightMargin: number
+  rightPadding: number
   text: string
 }
 
 export interface VerticalPaddingLine {
-  padding: string
+  padding: number
 }
