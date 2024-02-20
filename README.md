@@ -68,6 +68,17 @@ console.log(wrappedText)
   // > long text°
   ```
 
+- **`height`** `number`
+  Truncates the text so that it fits the height. If not provided, the text will be wrapped only to the width.
+
+  ```js
+  const wrappedTextFillBlock = wrapText('This is some super long text', { width: 10, height: 2 })
+
+  console.log(wrappedTextFillBlock)
+  // > This is
+  // > some su...
+  ```
+
 - **`hyphenate`** `'always' | 'word' | 'never'` `default: 'never'`
   Breaks words to fit the width, and adds a hyphen to the end of the line. Use `always` to always hyphenate to fit the width on each line that needs it. Use `word` to only hyphenate words that are too long to fit the width. Use `never` or do not pass the option to disable hyphenation. The hyphenation follows just a few simple rules, like we don't break words smaller than 4 characters, and we only hyphenate text aligned to the left.
 
@@ -107,7 +118,7 @@ console.log(wrappedText)
   // > °°°°°°°°°°°°°°
   ```
 
-- **`width`** `number` `default: 80`
+- **`width`** `number`
   The width of the block to wrap the text. If not provided align, fillBlock, and padding will be applied as if width was provided as the largest line in the input text.
 
   ```js
