@@ -145,4 +145,33 @@ sit amet,
 consectetur              
 adipiscing elit          `)
   })
+
+  it('works with truncated heights', async (): Promise<void> => {
+    const largeText = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
+
+    const wrappedText = wrapText(largeText, { padding: 10, width: 20, height: 2 })
+
+    expect(wrappedText).toEqual(`                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+          Lorem ipsum dolor             
+          sit amet, ...                 
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        `)
+  })
 })
