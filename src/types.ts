@@ -4,7 +4,6 @@ export type Padding = number | NumericSides
 export type NumericSides = [number, number, number, number]
 export type TextAlign = 'left' | 'center' | 'right' | 'justify'
 export type VerticalAlign = 'top' | 'middle' | 'bottom'
-export type WrappedLine = WrappedLineDescriptor | VerticalPaddingLine
 
 export interface WrapTextOptions {
   align?: TextAlign
@@ -17,7 +16,7 @@ export interface WrapTextOptions {
   width?: number
 }
 
-export interface WrappedLineDescriptor {
+export interface WrappedLine {
   leftFill: number
   leftMargin: number
   leftPadding: number
@@ -25,8 +24,4 @@ export interface WrappedLineDescriptor {
   rightMargin: number
   rightPadding: number
   text: string
-}
-
-export interface VerticalPaddingLine {
-  padding: number
 }

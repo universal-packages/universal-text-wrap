@@ -1,22 +1,15 @@
-import { NumericSides, VerticalPaddingLine, WrappedLine, WrappedLineDescriptor } from './types'
+import { NumericSides, VerticalAlign, WrappedLine } from './types'
 
 export function synthesizeWrappedLine(wrappedLine: WrappedLine): string {
-  const wrappedLineDescriptor = wrappedLine as WrappedLineDescriptor
-  const verticalPaddingLine = wrappedLine as VerticalPaddingLine
-
-  if (verticalPaddingLine.padding) {
-    return ' '.repeat(verticalPaddingLine.padding)
-  } else {
-    return (
-      ' '.repeat(wrappedLineDescriptor.leftMargin) +
-      ' '.repeat(wrappedLineDescriptor.leftPadding) +
-      ' '.repeat(wrappedLineDescriptor.leftFill) +
-      wrappedLineDescriptor.text +
-      ' '.repeat(wrappedLineDescriptor.rightFill) +
-      ' '.repeat(wrappedLineDescriptor.rightPadding) +
-      ' '.repeat(wrappedLineDescriptor.rightMargin)
-    )
-  }
+  return (
+    ' '.repeat(wrappedLine.leftMargin) +
+    ' '.repeat(wrappedLine.leftPadding) +
+    ' '.repeat(wrappedLine.leftFill) +
+    wrappedLine.text +
+    ' '.repeat(wrappedLine.rightFill) +
+    ' '.repeat(wrappedLine.rightPadding) +
+    ' '.repeat(wrappedLine.rightMargin)
+  )
 }
 
 export function normalizeNumericSides(sides: number | NumericSides): NumericSides {

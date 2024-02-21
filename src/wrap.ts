@@ -45,8 +45,34 @@ export function wrap(text: string, options?: WrapTextOptions): WrappedLine[] {
 
   const wrappedLines: WrappedLine[] = []
 
-  for (let i = 0; i < finalOptions.padding[0] + finalOptions.margin[0]; i++) {
-    wrappedLines.push({ padding: finalWidth + finalOptions.padding[3] + finalOptions.padding[1] + finalOptions.margin[3] + finalOptions.margin[1] })
+  for (let i = 0; i < finalOptions.margin[0]; i++) {
+    const leftTextAreaMargin = Math.floor(finalWidth / 2)
+    const rightTextAreaMargin = finalWidth - leftTextAreaMargin
+
+    wrappedLines.push({
+      leftFill: 0,
+      leftMargin: finalOptions.margin[3] + finalOptions.padding[3] + leftTextAreaMargin,
+      leftPadding: 0,
+      rightFill: 0,
+      rightMargin: finalOptions.margin[1] + finalOptions.padding[1] + rightTextAreaMargin,
+      rightPadding: 0,
+      text: ''
+    })
+  }
+
+  for (let i = 0; i < finalOptions.padding[0]; i++) {
+    const leftTextAreaPadding = Math.floor(finalWidth / 2)
+    const rightTextAreaPadding = finalWidth - leftTextAreaPadding
+
+    wrappedLines.push({
+      leftFill: 0,
+      leftMargin: finalOptions.margin[3],
+      leftPadding: finalOptions.padding[3] + leftTextAreaPadding,
+      rightFill: 0,
+      rightMargin: finalOptions.margin[1],
+      rightPadding: finalOptions.padding[1] + rightTextAreaPadding,
+      text: ''
+    })
   }
 
   if (height && wrappedLines.length + finalOptions.padding[0] + finalOptions.padding[2] < finalOptions.height && finalOptions.fillBlock) {
@@ -77,8 +103,34 @@ export function wrap(text: string, options?: WrapTextOptions): WrappedLine[] {
     }
   }
 
-  for (let i = 0; i < finalOptions.padding[2] + finalOptions.margin[2]; i++) {
-    wrappedLines.push({ padding: finalOptions.width + finalOptions.padding[3] + finalOptions.padding[1] + finalOptions.margin[3] + finalOptions.margin[1] })
+  for (let i = 0; i < finalOptions.padding[2]; i++) {
+    const leftTextAreaPadding = Math.floor(finalWidth / 2)
+    const rightTextAreaPadding = finalWidth - leftTextAreaPadding
+
+    wrappedLines.push({
+      leftFill: 0,
+      leftMargin: finalOptions.margin[3],
+      leftPadding: finalOptions.padding[3] + leftTextAreaPadding,
+      rightFill: 0,
+      rightMargin: finalOptions.margin[1],
+      rightPadding: finalOptions.padding[1] + rightTextAreaPadding,
+      text: ''
+    })
+  }
+
+  for (let i = 0; i < finalOptions.margin[2]; i++) {
+    const leftTextAreaMargin = Math.floor(finalWidth / 2)
+    const rightTextAreaMargin = finalWidth - leftTextAreaMargin
+
+    wrappedLines.push({
+      leftFill: 0,
+      leftMargin: finalOptions.margin[3] + finalOptions.padding[3] + leftTextAreaMargin,
+      leftPadding: 0,
+      rightFill: 0,
+      rightMargin: finalOptions.margin[1] + finalOptions.padding[1] + rightTextAreaMargin,
+      rightPadding: 0,
+      text: ''
+    })
   }
 
   return wrappedLines
