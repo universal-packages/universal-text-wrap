@@ -34,7 +34,11 @@ export function wrap(text: string, options?: WrapTextOptions): WrappedLine[] {
 
   const wrappedTextLines: string[] = []
   for (let i = 0; i < textLines.length; i++) {
-    wrapLine(wrappedTextLines, textLines[i], finalOptions)
+    if (textLines[i] === ' ') {
+      wrappedTextLines.push(' ')
+    } else {
+      wrapLine(wrappedTextLines, textLines[i], finalOptions)
+    }
 
     if (height && wrappedTextLines.length === height) {
       if (textLines[i] === '') wrappedTextLines[height - 1] = ELLIPSES

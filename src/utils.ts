@@ -1,4 +1,4 @@
-import { NumericSides, VerticalAlign, WrappedLine } from './types'
+import { NumericSides, WrappedLine } from './types'
 
 export function synthesizeWrappedLine(wrappedLine: WrappedLine): string {
   return (
