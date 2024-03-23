@@ -11,7 +11,7 @@ const ELLIPSES = '...'
 export function wrap(text: string, options?: WrapTextOptions): WrappedLine[] {
   const padding = normalizeNumericSides(options?.padding || 0)
   const height = options?.height === undefined ? undefined : Math.max(options.height - padding[0] - padding[2], 1)
-  const strippedText = stripAnsi(text)
+  const strippedText = stripAnsi(text || '')
   const textLines = strippedText.split('\n')
 
   // Optimization for when input comes in multiple lines and we need the longest one to calculate the width

@@ -1,7 +1,7 @@
 import { wrapText } from '../../src'
 
 describe(wrapText, (): void => {
-  it('default to teh same string if is just one character', async (): Promise<void> => {
+  it('default to the same string if is just one character', async (): Promise<void> => {
     expect(
       wrapText(' ', {
         fillBlock: true
