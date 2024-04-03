@@ -27,6 +27,9 @@ export function justifyText(line: string, width: number): string {
   const lineWordsCount = lineWords.length
   const lineWordsLength = lineWords.reduce((acc: number, word: string) => acc + word.length, 0)
   const remainingSpace = width - lineWordsLength
+
+  if (remainingSpace > line.length * 0.55) return line
+
   const spaceCount = lineWordsCount - 1
   const spacePerWord = spaceCount > 0 ? Math.floor(remainingSpace / spaceCount) : 0
   const remainingSpaceAfterDistribution = remainingSpace - spacePerWord * spaceCount

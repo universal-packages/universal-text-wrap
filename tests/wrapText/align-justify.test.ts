@@ -28,4 +28,18 @@ adipiscing  elit.  Sed do eiusmod tempor
 incididunt  ut  labore  et  dolore magna
 aliqua. Ut enim ad minim veniam, quis...`)
   })
+
+  it('does not justify short lines', async (): Promise<void> => {
+    expect(
+      wrapText(LOREM_IPSUM.substring(0, LOREM_IPSUM.length - 19), {
+        align: 'justify',
+        width: 40
+      })
+    ).toEqual(`Lorem  ipsum dolor sit amet, consectetur
+adipiscing  elit.  Sed do eiusmod tempor
+incididunt  ut  labore  et  dolore magna
+aliqua.  Ut  enim  ad minim veniam, quis
+nostrud   exercitation  ullamco  laboris
+nisi ut aliquip ex ea`)
+  })
 })
